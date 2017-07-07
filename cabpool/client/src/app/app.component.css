@@ -1,0 +1,100 @@
+
+.title{
+	background-image:url("/assets/img/travel1.jpg");
+	height:100px;
+}
+
+.menu_simple ul {
+	
+    width: 100%;
+    background-color: #005555;
+    margin: 0; padding: 0;
+    float: left;
+}
+
+.menu_simple ul li {
+    display: inline;
+}
+
+.menu_simple ul li a {
+    float: left; text-decoration: none;
+    color: yellow; 
+    padding: 10.5px 11px;
+    background-color:  #005555;
+}
+ 
+.menu_simple ul li a:visited {
+    color: white;
+}
+ 
+.menu_simple ul li a:hover, .menu_simple ul li .current {
+    color: white;
+    background-color: #5FD367;
+}
+
+/*find page*/
+/* Full-width input fields */
+input[type=text].large {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+	background-color:#ccccff;
+}
+
+input[type=text].small,input[type=number] {
+    width: 35%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+	background-color:#ccccff;
+}
+
+
+
+/* Set a style for all buttons */
+button {
+    background-color:#A18648;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    
+}
+
+
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn,.signupbtn {
+    float: left;
+    width: 50%;
+}
+
+/* Add padding to container elements */
+.container {
+    padding: 16px;
+}
+
+/* Clear floats */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+fieldset{
+	background-image:url("/assets/img/form.jpg");
+	width:75%;
+	margin-left:10%
+}
+.required label {
+    font-weight: bold;
+}
+label{
+	padding-right:1%;
+	
+}

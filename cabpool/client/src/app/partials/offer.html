@@ -1,0 +1,165 @@
+<script src="../../assets/scripts/RouteBoxer.js"></script>   
+<script>
+    var sourceLat, sourceLng;
+		var destinationLat, destinationLng;
+		function initialize() {
+
+			var directionsDisplay = new google.maps.DirectionsRenderer();
+			var directionsService = new google.maps.DirectionsService();
+			var map;
+			var routeBoxer = new RouteBoxer();
+			var distance = 1;
+			var cascadiaFault;
+			var routeBounds = [];
+
+			var mapOptions = {
+				center: new google.maps.LatLng(37.7831,-122.4039),
+				zoom: 12,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			};
+
+			var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+			directionsDisplay.setMap(map);
+
+			var source = new google.maps.places.Autocomplete(document.getElementById('source'));
+			var infoWindow = new google.maps.InfoWindow();
+			var marker = new google.maps.Marker({
+			  map: map
+			});
+
+			google.maps.event.addListener(source, 'place_changed', function() {
+			  infoWindow.close();
+			  var place = source.getPlace();
+			  marker.setPosition(place.geometry.location);
+			  sourceLat = marker.getPosition().lat();
+			  sourceLng = marker.getPosition().lng();
+			  infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
+			});
+
+			var destination = new google.maps.places.Autocomplete(document.getElementById('destination'));
+			var infoWindow = new google.maps.InfoWindow();
+			var marker = new google.maps.Marker({
+			  map: map
+			});
+
+			google.maps.event.addListener(destination, 'place_changed', function() {
+			  infoWindow.close();
+			  var place = destination.getPlace();
+			  marker.setPosition(place.geometry.location);
+			  destinationLat = marker.getPosition().lat();
+			  destinationLng = marker.getPosition().lng();
+			  infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
+
+				//Same event, draw route
+			    var start = new google.maps.LatLng(sourceLat, sourceLng);
+				var end = new google.maps.LatLng(destinationLat, destinationLng);
+				var request = {
+					origin: start,
+					destination: end,
+					travelMode: google.maps.TravelMode.DRIVING
+				};
+				directionsService.route(request, function(response, status) {
+					if (status == google.maps.DirectionsStatus.OK) {
+						directionsDisplay.setDirections(response);
+						directionsDisplay.setMap(map);
+						
+						// Box around the overview path of the first route
+					    var path = response.routes[0].overview_path;
+					    var boxes = routeBoxer.box(path, distance);
+						var pathsTemp = [];
+						for (var i = 0; i < boxes.length; i++) {
+							var bounds = boxes[i];
+							// Perform search over this bounds
+							pathsTemp.push(bounds.getCenter());
+							routeBounds.push(bounds);
+						}
+						var temp = {}
+						cascadiaFault = new google.maps.Polyline({
+							path: pathsTemp
+						 });
+						 
+						//alert(pathsTemp);
+						//alert(cascadiaFault.getPath());
+					} else {
+						alert("Directions Request from " + start.toUrlValue(6) + " to " + end.toUrlValue(6) + " failed: " + status);
+					}
+				});
+			});
+
+			var customerSource = new google.maps.places.Autocomplete(document.getElementById('customerSource'));
+			var infoWindow = new google.maps.InfoWindow();
+			var marker = new google.maps.Marker({
+			  map: map
+			});
+
+			google.maps.event.addListener(customerSource, 'place_changed', function() {
+			  infoWindow.close();
+			  var place = customerSource.getPlace();
+			  marker.setPosition(place.geometry.location);
+			  sourceLat = marker.getPosition().lat();
+			  sourceLng = marker.getPosition().lng();
+			  infoWindow.setContent('<div><strong>' + place.name + '</strong><br>');
+			});
+			
+			google.maps.event.addDomListener(document.getElementById('search'), 'click', function searchLocation() {
+			  alert(cascadiaFault);
+			  if(google.maps.geometry.poly.isLocationOnEdge(customerSource.getPlace().geometry.location, cascadiaFault, 0.01)) {
+				alert("On the way..!!");
+			  } else {
+				alert("Not on the way..!!");
+			  }
+			 // Console.log(routeBounds);
+			 console.log("cascadiaFault : " + JSON.stringify(cascadiaFault));
+			  console.log("--------" + customerSource.getPlace().geometry.location);
+			});
+
+		}
+		
+		google.maps.event.addDomListener(window, "load", initialize);
+</script>
+<form class="container" #offerForm="ngForm">
+ <fieldset>
+  <legend>Offer ride:</legend>
+  <label><b>Route:*</b></label>  
+  <select name="route" [(ngModel)]="rideModel.route" required>
+        <option *ngFor="let route of routes" >  
+        {{route}}
+        </option>
+    </select>
+    <br>
+    <label><b>From:*</b></label>
+    <input type="text" placeholder="From" id="source" class="small" name="from" [(ngModel)]="rideModel.from" maxlength="100" required>
+	
+    <label style="margin-left:50px;"><b>To:*</b></label>
+    <input type="text" class="small" placeholder="To" name="to" id="destination" [(ngModel)]="rideModel.to" maxlength="100" required>
+	<br>
+	<label><b>Email:*</b></label>
+    <input type="text" class="large" placeholder="abc@cde.com" id="email_offer" name="email"  [(ngModel)]="rideModel.email" id="email" required>
+	<br>
+    <label><b>Date of journey:*</b></label>
+    <input type="text" class="large some_class" placeholder="DD/MM/YYYY" id="date" name="date"  [(ngModel)]="rideModel.date" required>
+	<br>
+	<label style="margin-right:20px;"><b>Contact:*</b></label>
+    <input type="number"  class="small"  placeholder="xxxxxxxxxx" name="contact" id="contact_offer"  [(ngModel)]="rideModel.frcontact" required >
+	
+	<label style="margin-right:5px;"><b>Alt Contact:</b></label>
+    <input type="number"  class="small" placeholder="xxxxxxxxxx" name="alt_contact" id="alt_contact"  [(ngModel)]="rideModel.altContact" >
+	<br>
+	
+	<label><b>Vehicle No:*</b></label>
+    <input type="text" class="small" placeholder="Vehicle No" name="veh_no" id="veh_no_offer"  [(ngModel)]="rideModel.vehicleNo" required>
+	
+	<label><b>Vehicle Type:*</b></label>
+    <input type="text" class="small" placeholder="Vehicle Type" name="veh_type" id="veh_type_offer"  [(ngModel)]="rideModel.vehType" required>
+    <br>
+	<label style="margin-right:20px;"><b>Available No. of Seats:*</b></label>
+    <input type="number"  class="small"  name="noOfSeats" id="noOfSeats"  [(ngModel)]="rideModel.noOfSeats" required >
+   
+
+    <div class="clearfix">
+      <button type="submit" value="Publish" (click) = "onSubmit()">Publish</button>
+		<button type="reset" value="Reset">Reset</button>
+		</div>
+	</fieldset>
+  </form>

@@ -1,0 +1,45 @@
+
+ 
+
+<form class="container" #formSearch="ngForm" >
+ <fieldset>
+  <legend>Find your ride:</legend>
+    <label><b>Route:*</b></label>  
+    <select name="route" [(ngModel)]="searchModel.route" required>
+        <option *ngFor="let route of routes" >  
+        {{route}}
+        </option>
+    </select>
+    <br>
+    <label><b>From:*</b></label>
+    <input type="text" class="large" placeholder="From" id="source" name="from" [(ngModel)]="searchModel.from"   required/>
+	<br>
+    
+    <label><b>To:*</b></label>
+    <input type="text" class="large" placeholder="To" id="destination" name="to" [(ngModel)]="searchModel.to" required/>
+	<br>
+    <label><b>Date of journey:*</b></label>
+    <input type="text" class="large some_class" placeholder="DD/MM/YYYY HH:mm" id="date_find" name="date" [(ngModel)]="searchModel.date" required/>
+	
+
+    <div class="clearfix">
+      <button type="submit" value="Search" (click)="searchForMatch()" ><img style="width:30px;height:15px;" src="assets/img/find.png"/></button>
+		<button type="reset" value="Reset">Reset</button>
+    </div>
+
+    
+	
+	<table style="display:none">
+		
+		<tr>
+			<td>Customer Source</td>
+			<td><input type="text" id="customerSource"><input type="button" id="search" value="Search" /></td>
+		</tr>
+		<tr>
+			<td>Customer Destination</td>
+			<td><input type="text" id="customerDestination"></td>
+		</tr>
+	</table>
+	<div id="map" class="map-center" style="display:none"></div>
+</fieldset>
+</form>
